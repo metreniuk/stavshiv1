@@ -21,15 +21,25 @@
     <div class="container">
 
                 <div id="intro">
-                    <label for="nickname">Write your nickname</label>
+                    <label for="nickname">Cum zici ca te cheama?</label>
                     <input type="text" name="nickname" id="nickname">
-                    <button id="readyBtn">I'm ready!</button>    
+                    <button id="readyBtn">Gata sa joc!</button>    
                 </div>
                 
 
                 <div id="game-view">
                     <div class="container">
                         <div class="row">
+
+                            <div id="playersPoints">
+                                <p>Punctele jucatorilor:</p>
+                                <table>
+                                    <tr class="players-names"></tr>
+                                    
+                                </table>
+                                
+                            </div>
+
                             <div class="player-box" id="player-box">
                                 <div class="player-info">
                             
@@ -38,20 +48,31 @@
                                     <div class="bet-section">
                                         
                                         <input type="number" name="bet" id="bet-val">
-                                        <button id="bet-btn">Make bet</button>    
+                                        <button id="bet-btn">Fa o stavca</button>    
                                     </div>
                                     <br>
                                 </div>
                                 <div class="player-hand" >
 
                                 </div>
-                            </div>          
+                            </div>
+
+                            <div id="playersBets">
+                                <p>Stavshile jucatorilor:</p>
+                                <table>
+                                    <tr class="players-names"></tr>
+                                    
+                                </table>
+                                
+                            </div>
+
                         </div>
 
                         <div class="row">
                                 <div class="opponent-box" id="opponent0">
                                     <div class="player-info">
-                                        <p class="player-name"></p>
+                                        <p class="player-name"></p><br>
+                                        <p class="player-bet"></p>
                                     </div>
                                     <div class="player-hand" >
 
@@ -66,7 +87,8 @@
 
                                 <div class="opponent-box" id="opponent1">
                                     <div class="player-info">
-                                        <p class="player-name"></p>
+                                        <p class="player-name"></p><br>
+                                        <p class="player-bet"></p>
                                     </div>
                                     <div class="player-hand" >
 
@@ -79,7 +101,8 @@
                             
                                 <div class="opponent-box" id="opponent2">
                                     <div class="player-info">
-                                        <p class="player-name"></p>
+                                        <p class="player-name"></p><br>
+                                        <p class="player-bet"></p>
                                     </div>
                                     <div class="player-hand" >
 
@@ -99,6 +122,9 @@
         var mainPlayer = {};
         
         var opponents = [];
+        
+        var betSum = 10;
+        var doubleMode = false;
         $(document).ready(function() {
             $('#game-view').hide();
 
@@ -113,8 +139,22 @@
             $('#bet-btn').click(function() {
                 socket.emit("betDone", $('#bet-val').val());
                 $('.bet-section').hide();
+                $('#player-box .current-bet').html("");
+                $('#player-name').append("<p class='current-bet'> Stavca: " + $('#bet-val').val());
                 console.log("My bet is " + $('#bet-val').val());
             });  
+
+            //control bet
+            $('#bet-val').change(function(){
+                console.log("bet-val changed");
+                if(parseInt($('#bet-val').val()) + betSum == 7) {
+                    $('#bet-btn').prop('disabled', true);
+                    console.log("The sum of all bets shouldn't be equal 7");
+                } else {
+                    $('#bet-btn').prop('disabled', false);    
+                }
+                    
+            });
 
             //move
             $('#player-box').on('click', '.hand-item', function () {
@@ -133,7 +173,7 @@
             mainPlayer = newPlayer;
         });
 
-        socket.on('sitToTable', function (nickname, opponentsInGame){
+        socket.on('sitToTable', function (player, opponentsInGame){
             //things to hide
             $('#intro').hide();
             $('.bet-section').hide();
@@ -143,7 +183,7 @@
             renderStartOpponents(opponents);
 
             $('#game-view').show();
-            $('#player-name').text(nickname);
+            $('#player-name').text(player.name);
         });
 
         socket.on('opponentConnected', function (opponent) {
@@ -189,6 +229,12 @@
             $('.bet-section').show();
         });
 
+        //opponent actions
+        socket.on('opponentBet', function (opponentId, betVal) {
+            console.log("Opponent with id " + opponentId + " just made a " + betVal + " bet");
+            $('.opponent-box').filter('[data-id="' + opponentId + '"]').find('.player-info .player-bet').text("Stavca: " + betVal);
+        });
+
         socket.on('opponentMove', function (opponentId) {
             $('.opponent-box').filter('[data-id="' + opponentId + '"]').find('.player-hand button:first').remove();
         });
@@ -197,6 +243,64 @@
         socket.on('askMove', function () {
             console.log("It's your turn. Make your best move!");
             $('#player-box .hand-item').prop('disabled', false);
+        });
+
+        //control events
+        socket.on('controlBet', function (gameBetSum) {
+            betSum = gameBetSum;
+            console.log(betSum);
+        })
+
+        socket.on('controlMove', function (gameDoubleMode){
+            console.log('Control move event');
+            if(gameDoubleMode){
+                console.log("Now is a double mode");
+
+                var noDoubles = true;
+                //check on doubles in hand
+                $('#player-box .player-hand button').each(function() {
+                    if ($(this).attr("data-id") == "00" || $(this).attr("data-id") == "11" || 
+                        $(this).attr("data-id") == "22" || $(this).attr("data-id") == "33" ||
+                        $(this).attr("data-id") == "44" || $(this).attr("data-id") == "55" ||
+                        $(this).attr("data-id") == "66") {
+                        noDoubles = false;
+                    };
+                });
+                //disable no double items if there is doubles in hand
+                if (!noDoubles) {
+                    $('#player-box .player-hand button').each(function () {
+                        if($(this).attr("data-id") != "00" && $(this).attr("data-id") != "11" && 
+                            $(this).attr("data-id") != "22" && $(this).attr("data-id") != "33" && 
+                            $(this).attr("data-id") != "44" && $(this).attr("data-id") != "55" &&
+                            $(this).attr("data-id") != "66") {
+                            //need to disable this buttons
+                            $(this).attr('disabled', true);
+                        };
+                    });    
+                }
+                
+            }
+                
+        });
+
+        socket.on('showPoints' , function (players) {
+            console.log("Points");
+            $('#playersPoints .players-names').html("");
+            $('#playersPoints').append('<tr></tr>');
+            for(var i in players) {
+                $('#playersPoints .players-names').append("<th>" + players[i].name + "</th>");
+                $('#playersPoints tr:last').append("<td>" + players[i].points + "</td>");
+            }
+        });
+
+        socket.on('showBets' , function (players) {
+            console.log("Bets");
+            $('#playersBets .players-names').html("");
+            $('#playersBets').append('<tr></tr>');
+            for(var i in players) {
+                $('#playersBets .players-names').append("<th>" + players[i].name + "</th>");
+                $('#playersBets tr:last').append("<td>" + players[i].bet + "</td>");
+            }
         });
 
         function findOpponent(opponentId) {
@@ -212,6 +316,8 @@
                 $(opponentByIndex).find('.player-name').text(opponents[i].name);
                 $(opponentByIndex).attr('data-id', opponents[i].id);
                 $(opponentByIndex).addClass('active');
+
+
             };
         }
     

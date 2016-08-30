@@ -23,6 +23,9 @@ var deckModule = {
             this.value = value;
             this.id = id;
             this.owner = null;
+            this.isDouble = function() {
+                if(this.value > 20) return true;
+            };
         }
 
         var deck = [
@@ -56,8 +59,11 @@ var deckModule = {
 function Game(deck) {
     this.deck = deck;
     this.players = [];
+    //to keep the correct order
+    this.initPlayers = [];
     this.spectators = [];
     this.table = [];
+    this.betSum = 0;
     this.readyToStart = false;
     this.currentPlayer = {};
     this.betsOpen = false;
@@ -68,6 +74,9 @@ function Game(deck) {
     this.roundFinished = false;
     this.roundCounter = 1;
     this.gameFinished = false;
+    //to identify if the very first move was a double
+    this.firstMove = false;
+    this.doubleMode = false;
 
     this.distrDeck = function() {
         //cloning the initial deck to keep it the same
@@ -207,6 +216,12 @@ Game.prototype.findItem = function(itemId) {
     }
 };
 
+Game.prototype.rotateInitPlayers = function() {
+    this.initPlayers = arrayRotate(this.initPlayers, 1);
+    this.players = this.initPlayers.slice();
+    this.currentPlayer = this.players[0];
+};
+
 Game.prototype.rotatePlayers = function() {
     this.players = arrayRotate(this.players, 1);
     this.currentPlayer = this.players[0];
@@ -223,6 +238,11 @@ Game.prototype.checkFullCycle = function(numOfPlayers) {
         this.innerCounter = 0;
         this.fullCycle = true;
     }
+};
+
+Game.prototype.addBet = function(betVal) {
+    this.betSum += betVal;
+    return betVal;    
 };
 
 //"start"/"finish" functions
@@ -323,7 +343,7 @@ io.on('connection', function (client) {
     if(game.isFree()) {
       var newPlayer = new Player(client.id, nickname, false); 
       //it's important that this 'emit' is before addPlayer method
-      client.emit('sitToTable', nickname, game.players);
+      client.emit('sitToTable', newPlayer, game.players);
       game.addPlayer(newPlayer);
       client.emit('setMainPlayer', newPlayer);
       
@@ -344,6 +364,8 @@ io.on('connection', function (client) {
          game.currentPlayer = game.players[0];
          console.log("Current player is " + game.currentPlayer.name);  //works
 
+         game.initPlayers = game.players.slice();
+
          //start the very first round
          game.distrDeck();
 
@@ -363,13 +385,27 @@ io.on('connection', function (client) {
 
   client.on('betDone', function (betVal) {
     console.log("Current player's bet is ");
-    console.log(game.findPlayer(client.id).makeBet(betVal));
+    console.log(game.addBet(game.findPlayer(client.id).makeBet(parseInt(betVal))));
+    client.broadcast.emit('opponentBet', client.id, betVal);
     game.nextPlayer();
     
+    //control last bet to not equal 7
+    if(game.innerCounter == game.players.length - 1){
+        console.log(game.betSum);
+        io.to(game.currentPlayer.id).emit('controlBet', game.betSum);
+    }
+        
+
+
     //finishing bet process and starting move process
     if(game.fullCycle == true) {
         game.fullCycle = false;
         game.finishBets();
+
+        io.sockets.emit('showBets', game.players);
+
+        //first move
+        game.firstMove = true;
         io.to(game.currentPlayer.id).emit('askMove');
         console.log("Moving process started!");
     } else {
@@ -380,15 +416,26 @@ io.on('connection', function (client) {
   });
 
   client.on('makeMove', function(itemId) {
+
     var item = game.findItem(itemId);
     console.log("Player " + game.findPlayer(item.owner).name + " add to table " + item.id);
     game.findPlayer(item.owner).makeMove(item, game);
+
+    //dealing with doubleMode
+    if(game.firstMove == true) {
+        game.firstMove = false;
+        if( item.isDouble() ) game.doubleMode = true;
+    }
+
     game.nextPlayer();
 
     client.broadcast.emit('opponentMove', client.id);
 
     if(game.fullCycle == true) {
         game.fullCycle = false;
+        game.doubleMode = false;
+        //next move will be first
+        game.firstMove == true;
         game.finishMoves();
         game.showTable();
         console.log("inner counter " + game.innerCounter);
@@ -421,6 +468,7 @@ io.on('connection', function (client) {
             
             console.log("Round " + game.roundCounter + " is finished!");
             game.distrPoints();
+            io.sockets.emit('showPoints', game.players);
             game.showPlayersPoints();
 
             // at the end of a round
@@ -445,7 +493,9 @@ io.on('connection', function (client) {
             
 
             //start a new round
-            game.rotatePlayers();
+            //keep the correct order
+            game.rotateInitPlayers();
+
             console.log("This is round nr. " + game.roundCounter);
             game.removeBets();
             io.to(game.currentPlayer.id).emit('askBet');
@@ -453,10 +503,15 @@ io.on('connection', function (client) {
 
         } else {
             io.to(game.currentPlayer.id).emit('askMove');
+            io.to(game.currentPlayer.id).emit('controlMove', game.doubleMode);
+            game.firstMove = true;
+
         }
 
     } else {
         io.to(game.currentPlayer.id).emit('askMove');
+        io.to(game.currentPlayer.id).emit('controlMove', game.doubleMode);
+        
         game.showTable();
         console.log("inner counter " + game.innerCounter);    
     }

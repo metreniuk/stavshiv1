@@ -37,3 +37,7 @@
 	height: 200px;
 	border: 1px solid black;
 }
+
+#playersPoints, #playersBets {
+	width: 200px;
+}
