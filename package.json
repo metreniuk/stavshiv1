@@ -2,17 +2,24 @@
   "name": "stavshi",
   "version": "1.0.0",
   "description": "",
+  "engines": {
+    "node": "5.9.1"
+  },
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/metreniuk/stavshiv1.git"
+    "url": "https://github.com/metreniuk/stavshiv1.git"
   },
   "author": "",
-  "license": "ISC",
+  "keywords": [
+    "node",
+    "heroku",
+    "express"
+  ],
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/metreniuk/stavshiv1/issues"
   },
