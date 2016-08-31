@@ -1,7 +1,7 @@
 {
   "name": "stavshi",
   "version": "1.0.0",
-  "description": "",
+  "description": "sad",
   "engines": {
     "node": "5.9.1"
   },
@@ -20,10 +20,6 @@
     "express"
   ],
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/metreniuk/stavshiv1/issues"
-  },
-  "homepage": "https://github.com/metreniuk/stavshiv1#readme",
   "dependencies": {
     "express": "^4.10.2",
     "socket.io": "^1.4.8"
