@@ -1,0 +1,8 @@
+{
+  "name": "Stavshi online",
+  "description": "Jucam stavshi cu patanii",
+  "repository": "https://github.com/metreniuk/stavshiv1",
+  "logo": "http://node-js-sample.herokuapp.com/node.svg",
+  "keywords": ["node", "express", "static"],
+  "image": "heroku/nodejs"
+}
