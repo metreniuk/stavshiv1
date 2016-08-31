@@ -10,11 +10,6 @@ app.set('port', (process.env.PORT || 5000));
 
 app.use(express.static(__dirname + "/public"));
 
-app.get('/', function(request, response) {
-  response.send('hello world');
-  console.log('hello');
-});
-
 http.listen(app.get('port'), function(){
   console.log('listening on :' + app.get('port'));
 });
