@@ -8,6 +8,9 @@ var io = require('socket.io')(http);
 
 app.use(express.static(__dirname + "/public"));
 
+app.get('/', function(request, response) {
+  response.send('hello world!');
+});
 
 http.listen(8080, function(){
   console.log('listening on *:8080');
