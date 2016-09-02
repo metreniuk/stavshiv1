@@ -167,7 +167,7 @@
             });
         });
 
-        
+        //socket logic
 
         socket.on('setMainPlayer', function (newPlayer) {
             mainPlayer = newPlayer;
@@ -207,6 +207,24 @@
                     break;
             }
             console.log(opponents);
+        });
+
+        socket.on('opponentDisconnectedAfterStart', function (opponentId) {
+            alert("Jucatorul " + findOpponent(opponentId).name + " a iesit din joc!");
+            removeOpponent(opponentId);
+            console.log("Opponent with id " + opponentId + " has been removed");
+            socket.emit('restartGame');
+            location.reload();
+        });
+
+        socket.on('opponentDisconnectedBeforeStart', function (opponentId) {
+            removeOpponent(opponentId);
+            $('.opponent-box').filter('[data-id="' + opponentId + '"]').find('.player-name').text("");
+            $('.opponent-box').filter('[data-id="' + opponentId + '"]').find('.player-hand').html("");
+            $('.opponent-box').filter('[data-id="' + opponentId + '"]').find('.player-bet').html("");
+            $('.opponent-box').filter('[data-id="' + opponentId + '"]').removeClass('active');
+            $('.opponent-box').filter('[data-id="' + opponentId + '"]').removeAttr('data-id');
+            console.log("Opponent with id " + opponentId + " has been removed");
         });
 
         socket.on('setHand', function (hand) {
@@ -305,9 +323,20 @@
 
         function findOpponent(opponentId) {
             for(var i in opponents) {
-                if(opponentId == opponents[i])
+                if(opponentId == opponents[i].id)
                     return opponents[i];
             }
+        }
+
+        function removeOpponent(opponentId) {
+              var index;
+              opponents.filter(function(el, i) {
+                if(el.id == opponentId)
+                    index = i;
+              })
+              var removedOpponent = opponents.splice(index, 1);
+              console.log("Player with id: " + opponentId + " has been removed from the game.");
+              return removedOpponent;
         }
 
         function renderStartOpponents(opponents) {

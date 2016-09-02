@@ -189,7 +189,12 @@ function Game(deck) {
     }
 }
 
+//add/remove functions
 
+Game.prototype.addBet = function(betVal) {
+    this.betSum += betVal;
+    return betVal;    
+};
 
 Game.prototype.addPlayer = function(player) {
   this.players.push(player);
@@ -199,6 +204,19 @@ Game.prototype.addPlayer = function(player) {
 Game.prototype.addSpectator = function(spectator) {
   this.spectators.push(spectator)
   console.log("Spectator with id: " + spectator.id + " has been added in the game as a spectator.");
+};
+
+Game.prototype.removePlayer = function(playerId) {
+  var index;
+  game.players.filter(function(el, i) {
+    if(el.id == playerId)
+        index = i;
+  })
+  var removedPlayer = game.players.splice(index, 1);
+  game.showPlayers();
+  console.log("Player with id: " + playerId + " has been removed from the game.");
+  game.showPlayers();
+  return removedPlayer;
 };
 
 //"find" functions
@@ -239,11 +257,6 @@ Game.prototype.checkFullCycle = function(numOfPlayers) {
         this.innerCounter = 0;
         this.fullCycle = true;
     }
-};
-
-Game.prototype.addBet = function(betVal) {
-    this.betSum += betVal;
-    return betVal;    
 };
 
 //"start"/"finish" functions
@@ -335,10 +348,23 @@ var game = new Game(deckModule.createDeck());
 
 io.on('connection', function (client) {  
   
+  client.on('restartGame', function () {
+    game = new Game(deckModule.createDeck());
+  });  
+
   client.on('connection', function() {
     console.log("user with id: " + client.id + " has been connected.");
     
   });
+
+  client.on('disconnect', function() {
+    console.log("Client with id " + client.id + " has been disconnected");
+    game.removePlayer(client.id);
+    if(game.readyToStart)
+        client.broadcast.emit('opponentDisconnectedAfterStart', client.id)
+    else
+        client.broadcast.emit('opponentDisconnectedBeforeStart', client.id)
+  })
 
   client.on('ready', function(nickname) {
     if(game.isFree()) {
@@ -357,7 +383,7 @@ io.on('connection', function (client) {
       game.showPlayers();
       client.broadcast.emit("opponentConnected", newPlayer);
 
-      if(game.players.length == 2 ) {
+      if(game.players.length == 4 ) {
          game.readyToStart = true;
          //Game begins!
          console.log("The game begins!");
