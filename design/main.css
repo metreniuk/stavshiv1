@@ -1,0 +1,503 @@
+body {
+  background-color: #F9FADD;
+  padding: 100px;
+  font-family: 'Itim', cursive;
+}
+
+p {
+  margin-bottom: 0;
+}
+/*
+*  GENERAL
+*/
+
+.player-main {
+  background-color: #AEDDE5;
+  width: 700px;
+  height: 100px;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  border-radius: 10px 10px 0 0;
+}
+
+.player-logo {
+  width: 150px;
+  height: 100px;
+}
+
+.player-info {
+  width: 150px;
+  height: 100px;
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+  padding-top: 10px;
+}
+
+.player-info {
+  font-size: 24px;
+}
+
+.item {
+  width: 50px;
+  height: 100px;
+  background-color: #fff;  
+  border-radius: 10px;
+}
+
+
+/*
+*  PLAYER-MAIN'S STYLES
+*/
+
+.player-main .player-hand {
+  display: flex;
+  justify-content: center;
+  width: 500px;
+  height: 100px;
+}
+
+.player-main .item, .table .item {
+  margin-right: 10px;
+  position: relative;
+  top: -30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 10px;
+}
+
+.player-main .item:hover {
+  position: relative;
+  top: -35px;
+  cursor: pointer;
+}
+
+.half {
+  width: 95%;
+  height: 38%;
+}
+
+.delimeter {
+  height: 3%;
+  width: 100%;
+  background-color: #332F29;
+  border-radius: 2px;
+}
+
+.dot {
+  background-color: #332F29;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+/*
+*  HALFS
+*/
+
+.half-1, .half-2, .half-3, .half-4, .half-5, .half-6 {
+  display: flex;
+  justify-content: center;
+}
+
+.half-1 {
+  align-items: center;
+}
+
+.half-2 {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.half-2 .dot:nth-child(1) {
+  align-self: flex-start;
+}
+
+.half-2 .dot:nth-child(2) {
+  align-self: flex-end;
+}
+
+.half-3 {
+  justify-content: space-between;
+}
+
+.half-3 .dot:nth-child(1) {
+  align-self: flex-start;
+}
+
+.half-3 .dot:nth-child(2) {
+  align-self: center;
+}
+
+.half-3 .dot:nth-child(3) {
+  align-self: flex-end;
+}
+
+.half-4 {
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-content: space-between; 
+}
+
+.half-4 .dot:nth-child(1) {
+  margin-right: 40%;
+}
+
+.half-5 {
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-content: space-between;  
+}
+
+.half-5 .dot:nth-child(1)  {
+  margin-right: 40%;
+}
+
+.half-5 .dot:nth-child(3) {
+  margin-left: 40%;
+  margin-right: 20%;
+}
+
+.half-6 {
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-content: space-between;
+}
+
+.half-6 .dot:nth-child(3) {
+  margin-right: 40%;
+}
+
+/*
+*  OPPONENT'S STYLES
+*/
+
+.opponent {
+  display: flex;
+  justify-content: space-between;
+}
+
+.opponent .player-logo {
+  width: 100px;
+  height: 100px;
+}
+
+.opponent .player-info {
+  width: 100px;
+  height: 100px;
+}
+
+.opponent-left, .opponent-right{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  height: 400px;
+  width: 100px;
+  flex-direction: column;
+  background-color: #AEDDE5;
+}
+
+.opponent-left {
+  left: 0;
+  border-radius: 0 10px 10px 0;
+}
+
+.opponent-right {
+  right: 0;
+  border-radius: 10px 0 0 10px;
+}
+
+.opponent-left .player-hand, .opponent-right .player-hand {
+  -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    transform: rotate(90deg);
+  display: flex;
+  justify-content: space-between;
+  width: 200px;
+  height: 100px;
+  position: relative;
+  left: -70px;
+}
+
+.opponent-left .player-info, .opponent-right .player-info {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.opponent-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  height: 100px;
+  width: 450px;
+  background-color: #AEDDE5;
+  border-radius: 0 0 10px 10px;
+}
+
+.opponent-top .player-hand {
+  display: flex;
+  justify-content: space-between;
+  width: 250px;
+  height: 100px;
+}
+
+.opponent .item {
+  width: 35px;
+  height: 60px;
+  border-radius: 7px;
+  box-shadow: 2px 0 #ccc;
+}
+
+.opponent .item:nth-child(1) {
+  z-index: 7;
+}
+
+.opponent .item:nth-child(2) {
+  z-index: 6;
+  position: relative;
+  left: -5px;
+}
+
+.opponent .item:nth-child(3) {
+  z-index: 5;
+  position: relative;
+  left: -10px;
+}
+
+.opponent .item:nth-child(4) {
+  z-index: 4;
+  position: relative;
+  left: -15px;
+}
+
+.opponent .item:nth-child(5) {
+  z-index: 3;
+  position: relative;
+  left: -20px;
+}
+
+.opponent .item:nth-child(6) {
+  z-index: 2;
+  position: relative;
+  left: -25px;
+}
+
+.opponent .item:nth-child(7) {
+  z-index: 1;
+  position: relative;
+  left: -30px;
+}
+
+/*
+*  MEDIA QUERIES
+*/
+
+@media(max-width: 960px) {
+  .player-main {
+    width: 470px;
+    height: 60px;
+  }
+  
+  .player-main .player-logo, .player-main .player-info {
+    height: 100%;
+  }
+  .player-main .player-hand {
+    width: 70%;
+    height: 100%;
+  }
+  
+  .player-main .item {
+    width: 40px;
+    height: 80px;
+    padding: 10px 8px;
+  }
+  
+  .player-main .dot {
+    width: 5px;
+    height: 5px;
+  }
+  
+.player-main .player-logo, .player-main .player-info, .opponent-top .player-logo, .opponent-top .player-info {
+    width: 15%;
+  }
+  
+  .opponent-left .player-logo, .opponent-left .player-info, .opponent-right .player-logo, .opponent-right .player-info {
+    width: 100%;
+    height: 25%;
+  }
+  
+  .player-info {
+    font-size: 16px;
+  }
+  
+  .opponent .player-hand {
+    width: 180px;
+  }
+  
+  .opponent-top {
+    width: 40vw;
+    height: 10vw;
+    padding-right: 7px;
+    min-width: 320px;
+    min-height: 87px;
+  }
+  
+  .opponent-top .player-info div {
+    margin-right: 10px;
+  }
+  
+  .opponent-left, .opponent-right {
+    width: 10vw;
+    height: 40vw;
+    min-height: 320px;
+    min-width: 87px;
+  }
+  
+  .opponent .item {
+    width: 25px;
+    height: 40px;
+  }
+}
+
+@media(max-width: 640px) {
+  .player-main {
+    width: 470px;
+    height: 60px;
+  }
+  .player-main .player-hand {
+    max-height: 75px;
+  }
+  
+  .player-main .item {
+    width: 30px;
+    height: 55px;
+    border-radius: 15%;
+    top: -20px;
+    padding: 7px 5px;
+    margin-right: 7px;
+  }
+  
+  .player-main .dot {
+    width: 3px;
+    height: 3px;
+  }
+  
+  .player-info {
+    font-size: 12px;
+  }
+  
+  .opponent .player-hand {
+    width: 120px;
+  }
+  
+  .opponent-top {
+    padding-right: 15px;
+    min-width: 240px;
+    min-height: 65px;
+  }
+  
+  .opponent-top .player-info div {
+    margin-right: 10px;
+  }
+  
+  .opponent-left, .opponent-right {
+    min-height: 240px;
+    min-width: 65px;
+  }
+  
+  .opponent-left .player-hand, .opponent-right .player-hand {
+    left: -60px;
+  }
+  
+  .opponent .item {
+    width: 25px;
+    height: 40px;
+    border-radius: 15%;
+  }
+  
+  .delimeter {
+    height: 1px;
+  }
+}  
+@media(max-width: 500px) {
+  .player-main {
+    width: 320px;
+    height: 50px;
+  }
+  
+}
+  
+@media(max-width: 360px) {
+  .opponent-left, .opponent-right {
+    min-height: 200px;
+    min-width: 65px;
+  }
+  
+  .player-main {
+    width: 270px;
+    height: 40px;
+  }
+  .player-info {
+    font-size: 10px;
+  }
+  .player-main .dot {
+    width: 3px;
+    height: 3px;
+  }
+  .half {
+    height: 28%;
+  }
+  .player-main .item {
+    height: 50px;
+    padding: 6px 5px;
+    top: -16px;
+    margin-right: 5px;
+  }
+}  
+
+
+/*
+*  TABLE
+*/
+
+.table {
+  width: 30vw;
+  height: 40vh;
+  position: absolute;
+  margin: 0 35vw;
+  top: 30vh;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ecf0f1;
+  border-radius: 10px;
+}
+
+.table .item {
+  top: 0;
+}
+
+.table .item:hover {
+  cursor: pointer;
+}
+
+
+/*
+*  ANIMATION
+*/
+

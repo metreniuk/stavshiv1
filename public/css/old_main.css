@@ -1,0 +1,43 @@
+
+
+.row {
+	display: flex;
+	justify-content: center;
+	height: 200px;
+}
+
+/*
+	BOXES WITH "ALL CENTER" FLEX
+*/
+.player-info, .table {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+} 
+
+.player-box, .opponent-box {
+	width: 300px;
+	height: 200px;
+	border: 1px solid black;
+}
+
+.player-info {
+	height: 70%;
+	
+}
+
+.player-hand {
+	height: 30%;
+	border: 1px solid black;
+	text-align: center;
+}
+
+.table {
+	width: 500px;
+	height: 200px;
+	border: 1px solid black;
+}
+
+#playersPoints, #playersBets {
+	width: 200px;
+}

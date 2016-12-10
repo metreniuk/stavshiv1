@@ -1,0 +1,200 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Itim" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="main.css">
+  </head>
+  <body>
+    <!-- HANDS -->
+    <div id="intro">
+      <label for="nickname">Cum zici ca te cheama?</label>
+      <input type="text" name="nickname" id="nickname">
+      <button id="readyBtn">Gata sa joc!</button>    
+    </div>
+
+    <div id="game-view">
+      <div class="player-main">
+        <div class="player-logo">
+          <h4 class="player-name">Name</h4>
+        </div>
+        <div class="player-hand">
+          <div class="item item-12">
+            <div class="half half-1">
+              <div class="dot"></div>
+            </div>
+            <div class="delimeter">
+            </div>
+            <div class="half half-2">
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </div>
+          </div>
+          <div class="item item-12">
+            <div class="half half-1">
+              <div class="dot"></div>
+            </div>
+            <div class="delimeter">
+            </div>
+            <div class="half half-2">
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </div>
+          </div>
+          <div class="item item-34">
+            <div class="half half-3">
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </div>
+            <div class="delimeter"></div>
+            <div class="half half-4">
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>          
+            </div>        
+          </div>
+          <div class="item item-56">
+            <div class="half half-5">
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              </div>
+              <div class="delimeter">
+              </div>
+              <div class="half half-6">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+              </div>
+          </div>         
+          <div class="item item-12">
+            <div class="half half-1">
+              <div class="dot"></div>
+            </div>
+            <div class="delimeter">
+            </div>
+            <div class="half half-2">
+              <div class="dot"></div>
+              <div class="dot"></div>
+          </div>
+          </div>
+          <div class="item item-12">
+            <div class="half half-1">
+              <div class="dot"></div>
+            </div>
+            <div class="delimeter">
+            </div>
+            <div class="half half-2">
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </div>
+          </div>
+          <div class="item item-12">
+            <div class="half half-1">
+              <div class="dot"></div>
+            </div>
+            <div class="delimeter">
+            </div>
+            <div class="half half-2">
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </div>
+          </div>
+        </div>  
+        <div class="player-info">
+          <div class="score">
+            <span>20</span>
+            <p>points</p>
+          </div>
+          <div class="bets">
+            <div class="bet-section">
+              <input type="number" name="bet" id="bet-val">
+              <button id="bet-btn">Fa o stavca</button>    
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="opponent opponent-left opponent-box">
+        <div class="player-logo"></div>
+        <div class="player-hand">
+          <div class="item"></div>
+          <div class="item"></div>
+          <div class="item"></div>
+          <div class="item"></div>
+          <div class="item"></div>
+          <div class="item"></div>
+          <div class="item"></div>
+        </div>
+        <div class="player-info">
+          <div class="score">
+            <span>20</span>
+            <p>points</p>
+          </div>
+          <div class="bets">
+            <span>3</span>
+            <p>bet</p>
+          </div>
+        </div>
+      </div>
+      <div class="opponent opponent-right opponent-box">
+        <div class="player-logo"></div>
+        <div class="player-hand">
+          <div class="item"></div>
+          <div class="item"></div>
+          <div class="item"></div>
+          <div class="item"></div>
+          <div class="item"></div>
+          <div class="item"></div>
+          <div class="item"></div>
+        </div>
+        <div class="player-info">
+          <div class="score">
+            <span>20</span>
+            <p>points</p>
+          </div>
+          <div class="bets">
+            <span>3</span>
+            <p>bet</p>
+          </div>
+        </div>    
+      </div>
+      <div class="opponent opponent-top opponent-box">
+        <div class="player-logo"></div>
+        <div class="player-hand">
+          <div class="item"></div>
+          <div class="item"></div>
+          <div class="item"></div>
+          <div class="item"></div>
+          <div class="item"></div>
+          <div class="item"></div>
+          <div class="item"></div>
+        </div>
+        <div class="player-info">
+          <div class="score">
+            <span>20</span>
+            <p>points</p>
+          </div>
+          <div class="bets">
+            <span>3</span>
+            <p>bet</p>
+          </div>
+        </div>    
+      </div>
+      <!-- TABLE -->
+      <div id="table" class="table">
+      </div>
+    </div>
+    
+
+    <!-- SCRIPTS -->
+    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="text/javascript" src="front.js"></script>
+   </body>
+</html>
