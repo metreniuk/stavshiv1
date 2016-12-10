@@ -1,355 +1,91 @@
-<!DOCTYPE html>  
 <html>
-<head>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Itim" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
 
-    <!-- CSS LIBRARIES-->
-        <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+    <!-- HANDS -->
+    <div id="intro">
+      <label for="nickname">Cum zici ca te cheama?</label>
+      <input type="text" name="nickname" id="nickname">
+      <button id="readyBtn">Gata sa joc!</button>    
+    </div>
 
-    <!-- CUSTOM CSS -->
-        <link rel="stylesheet" type="text/css" href="css/main.css">
+    <div id="game-view">
+      <div class="player-main player-box">
+        <div class="player-logo">
+          <h4 class="player-name"></h4>
+        </div>
+        <div class="player-hand">
+          
+        </div>  
+        <div class="player-info">
+          <div class="score">
+          </div>
+          <div class="bet-section">
+            <input type="number" name="bet" id="bet-val" class="bet-val">
+            <button id="bet-btn" class="bet-val">Stavca</button>    
+          </div>
+          <div class="bets">
+          </div>
+        </div>
+        <button class="move-btn">Move</button>
+      </div>
 
-    <!-- JS LIBRARIES -->
-        
-        <script src="/socket.io/socket.io.js"></script>
-        <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
-        <!-- <script src="bower_components/angular/angular.min.js"></script> -->
-    <script>
-                
-    </script>
-</head>
-<body>
-    <div class="container">
+      <div id="opponent0" class="opponent opponent-top opponent-box player-box">
+        <div class="player-logo">
+          <h4 class="player-name"></h4>
+        </div>
+        <div class="player-hand">
+        </div>
+        <div class="player-info">
+          <div class="score">
+          </div>
+          <div class="bets">
+          </div>
+        </div>    
+      </div>
 
-                <div id="intro">
-                    <label for="nickname">Cum zici ca te cheama?</label>
-                    <input type="text" name="nickname" id="nickname">
-                    <button id="readyBtn">Gata sa joc!</button>    
-                </div>
-                
+      <div id="opponent1" class="opponent opponent-left opponent-box player-box">
+        <div class="player-logo">
+          <h4 class="player-name"></h4>
+        </div>
+        <div class="player-hand">
+        </div>
+        <div class="player-info">
+          <div class="score">
+          </div>
+          <div class="bets">
+          </div>
+        </div>
+      </div>
 
-                <div id="game-view">
-                    <div class="container">
-                        <div class="row">
-
-                            <div id="playersPoints">
-                                <p>Punctele jucatorilor:</p>
-                                <table>
-                                    <tr class="players-names"></tr>
-                                    
-                                </table>
-                                
-                            </div>
-
-                            <div class="player-box" id="player-box">
-                                <div class="player-info">
-                            
-                                    <p id="player-name" class="player-name"></p>
-
-                                    <div class="bet-section">
-                                        
-                                        <input type="number" name="bet" id="bet-val">
-                                        <button id="bet-btn">Fa o stavca</button>    
-                                    </div>
-                                    <br>
-                                </div>
-                                <div class="player-hand" >
-
-                                </div>
-                            </div>
-
-                            <div id="playersBets">
-                                <p>Stavshile jucatorilor:</p>
-                                <table>
-                                    <tr class="players-names"></tr>
-                                    
-                                </table>
-                                
-                            </div>
-
-                        </div>
-
-                        <div class="row">
-                                <div class="opponent-box" id="opponent0">
-                                    <div class="player-info">
-                                        <p class="player-name"></p><br>
-                                        <p class="player-bet"></p>
-                                    </div>
-                                    <div class="player-hand" >
-
-                                    </div>
-                                </div>
-
-                            
-                                <div class="table" id="#table">
-                                    
-                                </div>
-                            
-
-                                <div class="opponent-box" id="opponent1">
-                                    <div class="player-info">
-                                        <p class="player-name"></p><br>
-                                        <p class="player-bet"></p>
-                                    </div>
-                                    <div class="player-hand" >
-
-                                    </div>
-                                </div>
-                            
-                        </div>
-
-                        <div class="row">
-                            
-                                <div class="opponent-box" id="opponent2">
-                                    <div class="player-info">
-                                        <p class="player-name"></p><br>
-                                        <p class="player-bet"></p>
-                                    </div>
-                                    <div class="player-hand" >
-
-                                    </div>
-                                </div>
-                        </div>
-                    </div>    
-                </div>
-    </div>  
-
-    <script>
-
-        var socket = io();
-        socket.emit('connection');
-        console.log('I am connected!');
-
-        var mainPlayer = {};
-        
-        var opponents = [];
-        
-        var betSum = 10;
-        var doubleMode = false;
-        $(document).ready(function() {
-            $('#game-view').hide();
-
-            //ready
-            $("#readyBtn").click(function() {
-                console.log('Ready!');
-                socket.emit('ready', $("#nickname").val());
-                $("#readyBtn").prop('disabled', true);   
-            });  
-
-            //bet
-            $('#bet-btn').click(function() {
-                socket.emit("betDone", $('#bet-val').val());
-                $('.bet-section').hide();
-                $('#player-box .current-bet').html("");
-                $('#player-name').append("<p class='current-bet'> Stavca: " + $('#bet-val').val());
-                console.log("My bet is " + $('#bet-val').val());
-            });  
-
-            //control bet
-            $('#bet-val').change(function(){
-                console.log("bet-val changed");
-                if(parseInt($('#bet-val').val()) + betSum == 7) {
-                    $('#bet-btn').prop('disabled', true);
-                    console.log("The sum of all bets shouldn't be equal 7");
-                } else {
-                    $('#bet-btn').prop('disabled', false);    
-                }
-                    
-            });
-
-            //move
-            $('#player-box').on('click', '.hand-item', function () {
-                console.log('btn clicked!');
-                socket.emit('makeMove', $(this).data("id"));
-                console.log("Your move is " + $(this).data("id"));
-                $(this).remove();
-                $('#player-box .hand-item').prop('disabled', true);
-
-            });
-        });
-
-        //socket logic
-
-        socket.on('setMainPlayer', function (newPlayer) {
-            mainPlayer = newPlayer;
-        });
-
-        socket.on('sitToTable', function (player, opponentsInGame){
-            //things to hide
-            $('#intro').hide();
-            $('.bet-section').hide();
-
-            //"sitting" already existing opponents to table
-            opponents = opponentsInGame;
-            renderStartOpponents(opponents);
-
-            $('#game-view').show();
-            $('#player-name').text(player.name);
-        });
-
-        socket.on('opponentConnected', function (opponent) {
-            opponents.push(opponent);
-            console.log("Opponent " + opponent.name + " joined the game!");
-            switch(opponents.length) {
-                case 1:
-                    $('#opponent0').find('.player-name').text(opponent.name);
-                    $('#opponent0').attr('data-id', opponent.id);
-                    $('#opponent0').addClass('active');
-                    break;
-                case 2:
-                    $('#opponent1').find('.player-name').text(opponent.name);
-                    $('#opponent1').attr('data-id', opponent.id);
-                    $('#opponent1').addClass('active');
-                    break;
-                case 3:
-                    $('#opponent2').find('.player-name').text(opponent.name);
-                    $('#opponent2').attr('data-id', opponent.id);
-                    $('#opponent2').addClass('active');
-                    break;
-            }
-            console.log(opponents);
-        });
-
-        socket.on('opponentDisconnectedAfterStart', function (opponentId) {
-            alert("Jucatorul " + findOpponent(opponentId).name + " a iesit din joc!");
-            removeOpponent(opponentId);
-            console.log("Opponent with id " + opponentId + " has been removed");
-            socket.emit('restartGame');
-            location.reload();
-        });
-
-        socket.on('opponentDisconnectedBeforeStart', function (opponentId) {
-            removeOpponent(opponentId);
-            $('.opponent-box').filter('[data-id="' + opponentId + '"]').find('.player-name').text("");
-            $('.opponent-box').filter('[data-id="' + opponentId + '"]').find('.player-hand').html("");
-            $('.opponent-box').filter('[data-id="' + opponentId + '"]').find('.player-bet').html("");
-            $('.opponent-box').filter('[data-id="' + opponentId + '"]').removeClass('active');
-            $('.opponent-box').filter('[data-id="' + opponentId + '"]').removeAttr('data-id');
-            console.log("Opponent with id " + opponentId + " has been removed");
-        });
-
-        socket.on('setHand', function (hand) {
-            mainPlayer.hand = hand;
-            console.log('My hand is: ');
-            for (var i in mainPlayer.hand) {
-                console.log(mainPlayer.hand[i]);
-                //draw player's hand with item's id in data-id
-                $('.player-box .player-hand').append("<button data-id='" + mainPlayer.hand[i].id + "' class='hand-item'>" + mainPlayer.hand[i].id + "</button>");
-                $('#player-box .hand-item').prop('disabled', true);
-                
-                $('.opponent-box.active .player-hand').append("<button>" + "xx" + "</button>");
-            }
-        })
-
-
-        //bet process
-        socket.on('askBet', function () {
-            console.log('Make your bet!');
-            $('.bet-section').show();
-        });
-
-        //opponent actions
-        socket.on('opponentBet', function (opponentId, betVal) {
-            console.log("Opponent with id " + opponentId + " just made a " + betVal + " bet");
-            $('.opponent-box').filter('[data-id="' + opponentId + '"]').find('.player-info .player-bet').text("Stavca: " + betVal);
-        });
-
-        socket.on('opponentMove', function (opponentId) {
-            $('.opponent-box').filter('[data-id="' + opponentId + '"]').find('.player-hand button:first').remove();
-        });
-
-        //move process
-        socket.on('askMove', function () {
-            console.log("It's your turn. Make your best move!");
-            $('#player-box .hand-item').prop('disabled', false);
-        });
-
-        //control events
-        socket.on('controlBet', function (gameBetSum) {
-            betSum = gameBetSum;
-            console.log(betSum);
-        })
-
-        socket.on('controlMove', function (gameDoubleMode){
-            console.log('Control move event');
-            if(gameDoubleMode){
-                console.log("Now is a double mode");
-
-                var noDoubles = true;
-                //check on doubles in hand
-                $('#player-box .player-hand button').each(function() {
-                    if ($(this).attr("data-id") == "00" || $(this).attr("data-id") == "11" || 
-                        $(this).attr("data-id") == "22" || $(this).attr("data-id") == "33" ||
-                        $(this).attr("data-id") == "44" || $(this).attr("data-id") == "55" ||
-                        $(this).attr("data-id") == "66") {
-                        noDoubles = false;
-                    };
-                });
-                //disable no double items if there is doubles in hand
-                if (!noDoubles) {
-                    $('#player-box .player-hand button').each(function () {
-                        if($(this).attr("data-id") != "00" && $(this).attr("data-id") != "11" && 
-                            $(this).attr("data-id") != "22" && $(this).attr("data-id") != "33" && 
-                            $(this).attr("data-id") != "44" && $(this).attr("data-id") != "55" &&
-                            $(this).attr("data-id") != "66") {
-                            //need to disable this buttons
-                            $(this).attr('disabled', true);
-                        };
-                    });    
-                }
-                
-            }
-                
-        });
-
-        socket.on('showPoints' , function (players) {
-            console.log("Points");
-            $('#playersPoints .players-names').html("");
-            $('#playersPoints').append('<tr></tr>');
-            for(var i in players) {
-                $('#playersPoints .players-names').append("<th>" + players[i].name + "</th>");
-                $('#playersPoints tr:last').append("<td>" + players[i].points + "</td>");
-            }
-        });
-
-        socket.on('showBets' , function (players) {
-            console.log("Bets");
-            $('#playersBets .players-names').html("");
-            $('#playersBets').append('<tr></tr>');
-            for(var i in players) {
-                $('#playersBets .players-names').append("<th>" + players[i].name + "</th>");
-                $('#playersBets tr:last').append("<td>" + players[i].bet + "</td>");
-            }
-        });
-
-        function findOpponent(opponentId) {
-            for(var i in opponents) {
-                if(opponentId == opponents[i].id)
-                    return opponents[i];
-            }
-        }
-
-        function removeOpponent(opponentId) {
-              var index;
-              opponents.filter(function(el, i) {
-                if(el.id == opponentId)
-                    index = i;
-              })
-              var removedOpponent = opponents.splice(index, 1);
-              console.log("Player with id: " + opponentId + " has been removed from the game.");
-              return removedOpponent;
-        }
-
-        function renderStartOpponents(opponents) {
-            for(var i in opponents){
-                var opponentByIndex = "#opponent" + i;
-                $(opponentByIndex).find('.player-name').text(opponents[i].name);
-                $(opponentByIndex).attr('data-id', opponents[i].id);
-                $(opponentByIndex).addClass('active');
-
-
-            };
-        }
+      <div id="opponent2" class="opponent opponent-right opponent-box player-box">
+        <div class="player-logo">
+          <h4 class="player-name"></h4>
+        </div>
+        <div class="player-hand">
+        </div>
+        <div class="player-info">
+          <div class="score">
+          </div>
+          <div class="bets">
+          </div>
+        </div>    
+      </div>
+      
+      <!-- TABLE -->
+      <div id="table" class="table">
+      </div>
+    </div>
     
-    </script>
-</body>
+
+    <!-- SCRIPTS -->
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="front.js"></script>
+   </body>
 </html>
