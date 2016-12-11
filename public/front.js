@@ -235,6 +235,15 @@ var socket = io();
             }
 
         });
+
+        socket.on('endGame', function (players) {
+            $('#game-view').hide()
+            $('body').append('<div class="points-table"><table>' +
+                '<tr><th>Jucator</th><th>Puncte</th></tr></table></div>');
+            for (var i in players) {
+                $('.points-table table').append('<tr><td>' + players[i].name + '</td><td>' + players[i].points + '</td></tr>')
+            }
+        });
 /*
         socket.on('showBets' , function (players) {
             console.log("Bets");

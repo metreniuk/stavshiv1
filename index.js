@@ -6,16 +6,16 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);   
 
 
-var deckModule = require('./deckModule');
+var deckModule = require('./src/js/deckModule');
 var deck = deckModule.createDeck();
-var Game = require('./game');
-var Player = require('./player');
-var useful = require('./useful');
+var Game = require('./src/js/game');
+var Player = require('./src/js/player');
+var useful = require('./src/js/useful');
 var game = new Game(deck);
 
 app.set('port', (process.env.PORT || 5000));
 
-app.use(express.static("../../public"));
+app.use(express.static("./public"));
 
 http.listen(app.get('port'), function(){
   console.log('listening on :' + app.get('port'));
